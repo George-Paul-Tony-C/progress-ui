@@ -1,4 +1,6 @@
 import {
+  ArrowDown,
+  ArrowUp,
   CheckCircle2,
   Circle,
   Pencil,
@@ -13,89 +15,153 @@ import type {
 } from "../../types/roadmap";
 
 interface Props {
+
   milestone: Milestone;
+
+  disableMoveUp?: boolean;
+
+  disableMoveDown?: boolean;
+
+  onToggleCompleted: () => void;
+
+  onMoveUp: () => void;
+
+  onMoveDown: () => void;
+
   onEdit: () => void;
+
   onDelete: () => void;
+
 }
 
 export default function MilestoneCard({
+
   milestone,
+
+  disableMoveUp = false,
+
+  disableMoveDown = false,
+
+  onToggleCompleted,
+
+  onMoveUp,
+
+  onMoveDown,
+
   onEdit,
+
   onDelete,
+
 }: Props) {
 
   return (
 
     <Card className="flex items-center justify-between">
 
-      <div className="flex items-start gap-4">
+      <div className="flex flex-1 items-start gap-4">
 
-        {milestone.completed ? (
+        <button
 
-          <CheckCircle2
-            size={28}
-            className="mt-1 text-green-600"
-          />
+          onClick={onToggleCompleted}
 
-        ) : (
+          className="mt-1"
 
-          <Circle
-            size={28}
-            className="mt-1 text-slate-400"
-          />
+        >
 
-        )}
+          {milestone.completed ? (
 
-        <div>
+            <CheckCircle2
+              size={28}
+              className="text-green-600"
+            />
 
-          <h3 className="text-lg font-semibold">
+          ) : (
+
+            <Circle
+              size={28}
+              className="text-slate-400"
+            />
+
+          )}
+
+        </button>
+
+        <div className="flex-1">
+
+          <h3
+            className={`text-lg font-semibold ${
+              milestone.completed
+                ? "line-through text-slate-400"
+                : ""
+            }`}
+          >
 
             {milestone.title}
 
           </h3>
 
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-slate-500">
 
             {milestone.description ||
               "No description"}
 
           </p>
 
-          <span
-            className={`mt-3 inline-block rounded-full px-3 py-1 text-xs font-semibold ${
-              milestone.completed
-                ? "bg-green-100 text-green-700"
-                : "bg-slate-200 text-slate-700"
-            }`}
-          >
-
-            {milestone.completed
-              ? "Completed"
-              : "Pending"}
-
-          </span>
-
         </div>
 
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2">
 
         <Button
+
           variant="secondary"
-          onClick={onEdit}
+
+          disabled={disableMoveUp}
+
+          onClick={onMoveUp}
+
         >
 
-          <Pencil size={18} />
+          <ArrowUp size={16} />
 
         </Button>
 
         <Button
-          variant="danger"
-          onClick={onDelete}
+
+          variant="secondary"
+
+          disabled={disableMoveDown}
+
+          onClick={onMoveDown}
+
         >
 
-          <Trash2 size={18} />
+          <ArrowDown size={16} />
+
+        </Button>
+
+        <Button
+
+          variant="secondary"
+
+          onClick={onEdit}
+
+        >
+
+          <Pencil size={16} />
+
+        </Button>
+
+        <Button
+
+          variant="danger"
+
+          onClick={onDelete}
+
+        >
+
+          <Trash2 size={16} />
 
         </Button>
 
@@ -104,4 +170,5 @@ export default function MilestoneCard({
     </Card>
 
   );
+
 }

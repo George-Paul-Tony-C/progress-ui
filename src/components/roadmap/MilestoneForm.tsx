@@ -14,8 +14,6 @@ interface Props {
 
   initialDescription?: string;
 
-  initialCompleted?: boolean;
-
   loading?: boolean;
 
   submitText: string;
@@ -23,7 +21,6 @@ interface Props {
   onSubmit: (data: {
     title: string;
     description: string;
-    completed: boolean;
   }) => void;
 
 }
@@ -33,8 +30,6 @@ export default function MilestoneForm({
   initialTitle = "",
 
   initialDescription = "",
-
-  initialCompleted = false,
 
   loading = false,
 
@@ -51,22 +46,19 @@ export default function MilestoneForm({
     setDescription] =
       useState(initialDescription);
 
-  const [completed,
-    setCompleted] =
-      useState(initialCompleted);
-
   useEffect(() => {
 
-    setTitle(initialTitle);
+    setTitle(
+      initialTitle
+    );
 
-    setDescription(initialDescription);
-
-    setCompleted(initialCompleted);
+    setDescription(
+      initialDescription
+    );
 
   }, [
     initialTitle,
     initialDescription,
-    initialCompleted,
   ]);
 
   return (
@@ -75,55 +67,59 @@ export default function MilestoneForm({
 
       <div className="space-y-5">
 
-        <Input
-          placeholder="Milestone title"
-          value={title}
-          onChange={(e) =>
-            setTitle(
-              e.target.value
-            )
-          }
-        />
+        <div>
 
-        <Textarea
-          rows={5}
-          placeholder="Description"
-          value={description}
-          onChange={(e) =>
-            setDescription(
-              e.target.value
-            )
-          }
-        />
+          <label className="mb-1 block text-sm font-medium">
+            Title
+          </label>
 
-        <label className="flex items-center gap-3 rounded-xl border p-4">
-
-          <input
-            type="checkbox"
-            checked={completed}
+          <Input
+            placeholder="Milestone title"
+            value={title}
             onChange={(e) =>
-              setCompleted(
-                e.target.checked
+              setTitle(
+                e.target.value
               )
             }
           />
 
-          <span>
-            Mark as completed
-          </span>
+        </div>
 
-        </label>
+        <div>
+
+          <label className="mb-1 block text-sm font-medium">
+            Description
+          </label>
+
+          <Textarea
+            rows={5}
+            placeholder="Milestone description"
+            value={description}
+            onChange={(e) =>
+              setDescription(
+                e.target.value
+              )
+            }
+          />
+
+        </div>
 
         <Button
+
           fullWidth
+
           loading={loading}
+
           onClick={() =>
             onSubmit({
+
               title,
+
               description,
-              completed,
+
             })
           }
+
         >
 
           {submitText}

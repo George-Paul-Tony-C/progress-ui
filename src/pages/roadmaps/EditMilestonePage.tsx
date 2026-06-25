@@ -1,6 +1,6 @@
 import {
+  useLocation,
   useNavigate,
-  useParams,
 } from "react-router-dom";
 
 import { useMutation } from "@tanstack/react-query";
@@ -8,76 +8,96 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import {
-  createMilestone,
+  updateMilestone,
 } from "../../services/roadmap/roadmapService";
 
 import MilestoneForm from "../../components/roadmap/MilestoneForm";
 
 import SectionTitle from "../../components/ui/SectionTitle";
 
-export default function CreateMilestonePage() {
+export default function EditMilestonePage() {
 
   const navigate =
     useNavigate();
 
-  const { roadmapId } =
-    useParams();
+  const location =
+    useLocation();
+
+  const milestone =
+    location.state;
 
   const mutation =
     useMutation({
 
       mutationFn: (data: {
+
         title: string;
+
         description: string;
-        completed: boolean;
+
       }) =>
-        createMilestone(
-          roadmapId!,
-          {
-            title: data.title,
-            description: data.description,
-            orderNumber: 1,
-          }
+        updateMilestone(
+
+          milestone.id,
+
+          data
+
         ),
 
       onSuccess: () => {
 
         toast.success(
-          "Milestone created successfully"
+          "Milestone updated successfully"
         );
 
-        navigate(
-          `/roadmaps/${roadmapId}`
-        );
+        navigate(-1);
 
       },
 
       onError: () => {
 
         toast.error(
-          "Failed to create milestone"
+          "Failed to update milestone"
         );
 
       },
 
     });
 
+  if (!milestone) {
+
+    return (
+      <p>
+        Milestone not found.
+      </p>
+    );
+
+  }
+
   return (
 
     <div className="space-y-6">
 
       <SectionTitle
-        title="Create Milestone"
-        subtitle="Add a new milestone to your roadmap."
+        title="Edit Milestone"
+        subtitle="Update milestone details."
       />
 
       <MilestoneForm
 
-        submitText="Create Milestone"
+        initialTitle={
+          milestone.title
+        }
+
+        initialDescription={
+          milestone.description ?? ""
+        }
 
         loading={
           mutation.isPending
         }
+
+        submitText="Save Changes"
 
         onSubmit={(data) =>
           mutation.mutate(data)

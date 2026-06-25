@@ -29,15 +29,10 @@ export default function CreateMilestonePage() {
       mutationFn: (data: {
         title: string;
         description: string;
-        completed: boolean;
       }) =>
         createMilestone(
           roadmapId!,
-          {
-            title: data.title,
-            description: data.description,
-            orderNumber: 1,
-          }
+          data
         ),
 
       onSuccess: () => {
@@ -68,7 +63,7 @@ export default function CreateMilestonePage() {
 
       <SectionTitle
         title="Create Milestone"
-        subtitle="Add a new milestone to your roadmap."
+        subtitle="Add a milestone to your roadmap."
       />
 
       <MilestoneForm

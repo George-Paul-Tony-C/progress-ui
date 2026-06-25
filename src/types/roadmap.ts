@@ -87,7 +87,6 @@ export interface CreateMilestoneRequest {
 
   description?: string;
 
-  orderNumber: number;
 }
 
 export interface UpdateMilestoneRequest {

@@ -22,6 +22,9 @@ import {
   getMilestones,
   deleteRoadmap,
   deleteMilestone,
+  updateMilestone,
+  moveMilestoneUp,
+  moveMilestoneDown,
 } from "../../services/roadmap/roadmapService";
 
 import Loader from "../../components/ui/Loader";
@@ -122,6 +125,81 @@ export default function RoadmapDetailsPage() {
       },
 
     });
+
+    const toggleCompletedMutation =
+  useMutation({
+
+    mutationFn: ({
+      milestoneId,
+      completed,
+    }: {
+      milestoneId: string;
+      completed: boolean;
+    }) =>
+      updateMilestone(
+        milestoneId,
+        {
+          completed,
+        }
+      ),
+
+    onSuccess: () => {
+
+      queryClient.invalidateQueries({
+        queryKey: [
+          "milestones",
+          roadmapId,
+        ],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [
+          "roadmap",
+          roadmapId,
+        ],
+      });
+
+    },
+
+  });
+
+const moveUpMutation =
+  useMutation({
+
+    mutationFn:
+      moveMilestoneUp,
+
+    onSuccess: () => {
+
+      queryClient.invalidateQueries({
+        queryKey: [
+          "milestones",
+          roadmapId,
+        ],
+      });
+
+    },
+
+  });
+
+const moveDownMutation =
+  useMutation({
+
+    mutationFn:
+      moveMilestoneDown,
+
+    onSuccess: () => {
+
+      queryClient.invalidateQueries({
+        queryKey: [
+          "milestones",
+          roadmapId,
+        ],
+      });
+
+    },
+
+  });
 
   if (isLoading) {
     return <Loader />;
@@ -284,7 +362,11 @@ export default function RoadmapDetailsPage() {
         )}
 
         {milestones?.map(
-          milestone => (
+
+          (
+            milestone,
+            index
+          ) => (
 
             <MilestoneCard
 
@@ -294,6 +376,45 @@ export default function RoadmapDetailsPage() {
 
               milestone={
                 milestone
+              }
+
+              disableMoveUp={
+                index === 0
+              }
+
+              disableMoveDown={
+                index ===
+                milestones.length - 1
+              }
+
+              onToggleCompleted={() =>
+
+                toggleCompletedMutation.mutate({
+
+                  milestoneId:
+                    milestone.id,
+
+                  completed:
+                    !milestone.completed,
+
+                })
+
+              }
+
+              onMoveUp={() =>
+
+                moveUpMutation.mutate(
+                  milestone.id
+                )
+
+              }
+
+              onMoveDown={() =>
+
+                moveDownMutation.mutate(
+                  milestone.id
+                )
+
               }
 
               onEdit={() =>
@@ -325,6 +446,7 @@ export default function RoadmapDetailsPage() {
             />
 
           )
+
         )}
 
       </div>

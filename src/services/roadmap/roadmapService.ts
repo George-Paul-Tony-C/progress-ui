@@ -134,3 +134,34 @@ export async function deleteMilestone(
     `/milestones/${milestoneId}`
   );
 }
+
+
+export async function moveMilestoneUp(
+  milestoneId: string
+): Promise<Milestone> {
+
+  const response =
+    await api.patch<
+      ApiResponse<Milestone>
+    >(
+      `/milestones/${milestoneId}/move-up`
+    );
+
+  return response.data.data;
+
+}
+
+export async function moveMilestoneDown(
+  milestoneId: string
+): Promise<Milestone> {
+
+  const response =
+    await api.patch<
+      ApiResponse<Milestone>
+    >(
+      `/milestones/${milestoneId}/move-down`
+    );
+
+  return response.data.data;
+
+}
